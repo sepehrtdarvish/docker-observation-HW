@@ -1,0 +1,2 @@
+# Requirements for the load testing script
+requests>=2.25.0

@@ -1,0 +1,32 @@
+groups:
+  - name: flask_app_alerts
+    rules:
+      - alert: HighNon200StatusCodes
+        expr: rate(http_requests_total{status_code!="200"}[1m]) > 0.1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High rate of non-200 HTTP status codes"
+          description: "The Flask app is experiencing {{ $value }} non-200 status codes per second over the last minute"
+          runbook_url: "https://example.com/runbook/high-error-rate"
+      
+      - alert: CriticalNon200StatusCodes
+        expr: rate(http_requests_total{status_code!="200"}[1m]) > 0.5
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical rate of non-200 HTTP status codes"
+          description: "The Flask app is experiencing {{ $value }} non-200 status codes per second over the last minute"
+          runbook_url: "https://example.com/runbook/critical-error-rate"
+      
+      - alert: Non200StatusCodesCount
+        expr: sum(increase(http_requests_total{status_code!="200"}[1m])) > 10
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High count of non-200 HTTP status codes in 1 minute"
+          description: "The Flask app has {{ $value }} non-200 status codes in the last minute"
+          runbook_url: "https://example.com/runbook/high-error-count"
